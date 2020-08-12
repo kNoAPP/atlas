@@ -1,0 +1,5 @@
+# Announce a list of messages every interval. Interval is in ticks. Announcements will play in order then repeat.
+enabled: false
+interval: 1200
+announcements:
+  - '§7Example announcement%n%§7§oAnd a new line'
