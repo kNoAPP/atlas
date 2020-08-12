@@ -51,6 +51,14 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
         addParser(Double.class, doubleParsable);
         addParser(double.class, doubleParsable);
 
+        FloatParsable floatParsable = new FloatParsable();
+        addParser(Float.class, floatParsable);
+        addParser(float.class, floatParsable);
+
+        LongParsable longParsable = new LongParsable();
+        addParser(Long.class, longParsable);
+        addParser(long.class, longParsable);
+
         IntegerParsable integerParsable = new IntegerParsable();
         addParser(Integer.class, integerParsable);
         addParser(int.class, integerParsable);

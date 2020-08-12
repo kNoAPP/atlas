@@ -2,7 +2,6 @@ package com.knoban.atlas;
 
 import com.knoban.atlas.data.local.DataHandler;
 import com.knoban.atlas.pm.PrivateMessagingManager;
-import com.knoban.atlas.scheduler.AnnouncementManager;
 import com.knoban.atlas.utils.SoundBundle;
 import org.bukkit.Sound;
 import org.bukkit.plugin.java.JavaPlugin;
