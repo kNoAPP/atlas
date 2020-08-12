@@ -2,7 +2,6 @@ package com.knoban.atlas.commandsII.parsables;
 
 import com.knoban.atlas.commandsII.ACParsable;
 import org.bukkit.command.CommandSender;
-import org.godcomplex.core.util.player.PlayerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +16,8 @@ public class UUIDParsable implements ACParsable<UUID> {
         try {
             // Return the parsed uuid.
             return UUID.fromString(arg);
-        }
-        catch (Exception e) {
-            // Try parsing the UUID using the player util, and if that fails, return null
-            return PlayerUtil.createUUID(arg).orElse(null);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

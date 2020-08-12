@@ -1,7 +1,7 @@
 package com.knoban.atlas.scheduler;
 
+import com.knoban.atlas.Atlas;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.godcomplex.core.Core;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.PriorityBlockingQueue;
@@ -13,7 +13,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public final class ClockedTaskManager {
 
-    private static final ClockedTaskManager manager = new ClockedTaskManager(Core.getCore());
+    private static final ClockedTaskManager manager = new ClockedTaskManager(Atlas.getInstance());
 
     private final JavaPlugin plugin;
     private volatile boolean valid;
