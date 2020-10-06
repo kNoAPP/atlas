@@ -621,13 +621,16 @@ public class Tools {
 		}
 
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1);
-		if(show || (show = seconds > 0)) {
+		if(show) {
 			sb.append(String.format("%02d", seconds));
+			sb.append("s");
+		} else if((show = seconds > 0)) {
+			sb.append(String.format("%01d", seconds));
 			sb.append("s");
 		}
 
 		if(!show)
-			return "00s";
+			return "0s";
 
 		return sb.toString();
 	}
@@ -660,7 +663,7 @@ public class Tools {
 		}
 
 		if(!show)
-			return "00s";
+			return "0s";
 
 		return sb.toString();
 	}
