@@ -45,7 +45,7 @@ public class Atlas extends JavaPlugin {
     }
 
     /**
-     * Returns an instance referencing config.yml
+     * @return An instance referencing Atlas's config.yml
      */
     public DataHandler.YML getFileConfig() {
         return config;
