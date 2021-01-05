@@ -17,7 +17,6 @@ import java.io.IOException;
  */
 public class AtlasFirebase {
 
-    private String url;
     private FirebaseApp app;
 
     // Best for large data that's written once and read many times. (Charged $ based on calls)
@@ -32,18 +31,17 @@ public class AtlasFirebase {
 
     /**
      * Creates a AtlasFirebase for use within your plugin.
-     * @param url The URL of your Google Firebase application. Example: {@code https://<DATABASE_NAME>.firebaseio.com/}
+     * @param databaseURL The URL of your Google Firebase application. Example: {@code https://<DATABASE_NAME>.firebaseio.com/}
      * @param privateKey The service key's file path for your account.
      * See https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk?authuser=1
      * @throws IOException If the url/privateKey/authentication failed
      */
-    public AtlasFirebase(String url, File privateKey) throws IOException {
-        FileInputStream serviceAccount =
-                new FileInputStream(privateKey);
+    public AtlasFirebase(String databaseURL, File privateKey) throws IOException {
+        FileInputStream serviceAccount = new FileInputStream(privateKey);
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
+        FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(url)
+                .setDatabaseUrl(databaseURL)
                 .build();
         this.app = FirebaseApp.initializeApp(options);
 
