@@ -7,14 +7,13 @@
 
     <groupId>com.knoban</groupId>
     <artifactId>atlas</artifactId>
-    <version>1.0.1.0</version>
+    <version>1.0.1.1</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
 
     <dependencies>
         <!--
@@ -32,7 +31,7 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--  This is pulled through Java 8 Maven Artifact -->
@@ -46,6 +45,11 @@
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
             <version>5.5.1.201910021850-r</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>

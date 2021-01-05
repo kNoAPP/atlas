@@ -72,7 +72,7 @@ the [Formation.FormationBuilder](https://github.com/GodComplexMC/godcomplex-core
 ### FormationBuilder
 An instance of a `Formation` should be created using the `FormationBuilder`. Eclipse has a strange bug where it won't 
 suggest to import the class since its nested in the `Formation` class. You can get around that with 
-`import org.godcomplex.core.command.Formation.FormationBuilder;`. A FormationBuilder builds your Formation in a standard 
+`import com.knoban.core.command.Formation.FormationBuilder;`. A FormationBuilder builds your Formation in a standard 
 linear order. Here's an example of a proper `Formation`...
 
 ```java
