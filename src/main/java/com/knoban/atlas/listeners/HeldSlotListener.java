@@ -60,7 +60,7 @@ public final class HeldSlotListener implements Listener {
      * @param continuous A callback called periodically when the item is held
      * @param stop A callback called when the item has stopped being held
      */
-    public void setCallbacks(Player player, ItemStack item, Callback start, Callback continuous, Callback stop) {
+    public void setCallbacks(Player player, ItemStack item, Runnable start, Runnable continuous, Runnable stop) {
         CallableItemSet set = stack.get(player);
         if(set != null) {
             set.setItemCallbacks(item, start, continuous, stop);
@@ -113,7 +113,7 @@ public final class HeldSlotListener implements Listener {
      * @return The callback on the item
      */
     @Nullable
-    public Callback getCallback(Player player, ItemStack item, int type) {
+    public Runnable getCallback(Player player, ItemStack item, int type) {
         if(type < 0 || 2 < type)
             return null;
         CallableItemSet set = stack.get(player);
@@ -178,16 +178,16 @@ public final class HeldSlotListener implements Listener {
      */
     private static class CallableItemSet {
 
-        private final HashMap<ItemStack, Callback[]> itemCallbacks = new HashMap<>();
+        private final HashMap<ItemStack, Runnable[]> itemCallbacks = new HashMap<>();
 
-        public void setItemCallbacks(@Nullable ItemStack item, @Nullable Callback... callbacks) {
+        public void setItemCallbacks(@Nullable ItemStack item, @Nullable Runnable... callbacks) {
             if(item == null)
                 return;
 
             itemCallbacks.put(item, callbacks);
         }
 
-        public Callback[] removeItemCallbacks(@Nullable ItemStack item) {
+        public Runnable[] removeItemCallbacks(@Nullable ItemStack item) {
             if(item == null)
                 return null;
 
@@ -198,17 +198,17 @@ public final class HeldSlotListener implements Listener {
             if(item == null || type < 0 || 2 < type)
                 return;
 
-            Callback[] callbacks = itemCallbacks.get(item);
+            Runnable[] callbacks = itemCallbacks.get(item);
             if(callbacks == null)
                 return;
 
             if(callbacks[type] != null)
-                callbacks[type].call();
+                callbacks[type].run();
 
         }
 
         @Nullable
-        public Callback[] getItemCallbacks(@Nullable ItemStack item) {
+        public Runnable[] getItemCallbacks(@Nullable ItemStack item) {
             if(item == null)
                 return null;
 
