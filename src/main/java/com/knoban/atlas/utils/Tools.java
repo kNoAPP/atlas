@@ -160,7 +160,7 @@ public class Tools {
         Block lastBlock = iter.next();
         while (iter.hasNext()) {
             lastBlock = iter.next();
-            if (lastBlock.getType() == Material.AIR) {
+            if(lastBlock.getType() == Material.AIR) {
                 continue;
             }
             break;
