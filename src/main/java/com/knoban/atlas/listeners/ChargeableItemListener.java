@@ -99,6 +99,7 @@ public class ChargeableItemListener implements Listener {
      * Gets all charges of an {@link ItemStack} owned by a {@link Player}.
      * @param player The {@link Player} to get the charges from
      * @param item The {@link ItemStack} to get the charges of
+     * @return The number of remaining charges
      */
     public Integer getCharges(Player player, ItemStack item) {
         ChargableItemSet set = stack.get(player);
@@ -111,6 +112,7 @@ public class ChargeableItemListener implements Listener {
      * Gets the alert message of an {@link ItemStack} owned by a {@link Player}.
      * @param player The {@link Player} to get the message from
      * @param item The {@link ItemStack} to get the message of
+     * @return A String representing the Alert
      */
     public String getAlert(Player player, ItemStack item) {
         ChargableItemSet set = stack.get(player);

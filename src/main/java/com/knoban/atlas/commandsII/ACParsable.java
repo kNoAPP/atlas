@@ -53,6 +53,7 @@ public interface ACParsable<T> {
      * Runs on the main thread for suggestion checking.
      * Runs on an async thread for command execution.
      *
+     * @param sender The sender of the command.
      * @param parsed A parsed object passed through {@link #parse(CommandSender, String)}
      * @param filter A filter defined in {@link com.knoban.atlas.commandsII.annotations.AtlasParam}
      * @return null, if the parsed object passes the filter. Otherwise return a string indicating why the parsed value

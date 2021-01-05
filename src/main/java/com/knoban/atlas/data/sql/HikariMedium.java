@@ -48,4 +48,11 @@ public class HikariMedium {
 	public Connection getConnection() throws SQLException {
 		return ds.getConnection();
 	}
+
+	/**
+	 * Shutdown the DataSource and its associated pool.
+	 */
+	public void close() {
+		ds.close();
+	}
 }

@@ -79,10 +79,15 @@ public class Tools {
     		pl.playSound(pl.getLocation(), s, v, p);
     	}
     }
-    
-    /**
-     * Ignores Y-Axis
-     */
+
+	/**
+	 * Ignores the Y-Axis!
+	 * @param b1 - The 1st lower Coordinate.
+	 * @param t1 - The 1st upper Coordinate.
+	 * @param b2 - The 2nd lower Coordinate.
+	 * @param t2 - The 2nd upper Coordinate.
+	 * @return True, if the bounding boxes intersect.
+	 */
 	public static boolean intersects(Coordinate b1, Coordinate t1, Coordinate b2, Coordinate t2) {
 		return b1.getWorldName().equals(b2.getWorldName()) && t1.getZ() >= b2.getZ() && t1.getX() >= b2.getX() && b1.getZ() <= t2.getZ() && b1.getX() <= t2.getX();
 	}
@@ -228,6 +233,8 @@ public class Tools {
 
 	/**
 	 * @deprecated Use {@link Player#sendActionBar(String)}
+	 * @param player The player to send the actionbar to.
+	 * @param msg The message to send.
 	 */
 	public static void actionbarMessage(Player player, String msg) {
 		player.sendActionBar(msg);
@@ -348,6 +355,8 @@ public class Tools {
 	/**
 	 * A generic version of the selection sort algorithm. Here we can sort any type T that
 	 * implements the Comparable interface.
+	 * @param <T> The type of array to be sorted.
+	 * @param arr The array to be sorted.
 	 */
 	public static <T extends Comparable<T>> void selectionSort(T[] arr) {
 		for(int i=0; i<arr.length-1; ++i) {
@@ -387,7 +396,7 @@ public class Tools {
 	 * @param leftCharacter Character for left side
 	 * @param rightColor ChatColor for right side
 	 * @param rightCharacter Character for right side
-	 * @return
+	 * @return The generated wait-bar String
 	 */
 	public static String generateWaitBar(double prct, double total, ChatColor leftColor, char leftCharacter,
 										 ChatColor rightColor, char rightCharacter) {
@@ -621,13 +630,16 @@ public class Tools {
 		}
 
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1);
-		if(show || (show = seconds > 0)) {
+		if(show) {
 			sb.append(String.format("%02d", seconds));
+			sb.append("s");
+		} else if((show = seconds > 0)) {
+			sb.append(String.format("%01d", seconds));
 			sb.append("s");
 		}
 
 		if(!show)
-			return "00s";
+			return "0s";
 
 		return sb.toString();
 	}
@@ -660,7 +672,7 @@ public class Tools {
 		}
 
 		if(!show)
-			return "00s";
+			return "0s";
 
 		return sb.toString();
 	}

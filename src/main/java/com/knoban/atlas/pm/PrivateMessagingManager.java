@@ -34,17 +34,18 @@ public class PrivateMessagingManager {
      * Creates a PrivateMessageManager that registers the commands automatically: /msg, /pm, /w, /reply, /r, and /spy.
      * Also creates a {@link PrivateMessageEvent} that can be caught.
      * You must pass messaging formats here to the constructor using a few replaceable strings.
-     * <br /><br />
+     * <br><br>
      * %to% - The receiver's username of the message
-     * <br />
+     * <br>
      * %from% - The sender's username of the message
-     * <br />
+     * <br>
      * %msg% - The sender's message
      *
-     * @param plugin
-     * @param senderMsg
-     * @param receiverMsg
-     * @param spyMsg
+     * @param plugin An instance of a plugin.
+     * @param senderMsg The sender's message format.
+     * @param receiverMsg The receiver's message format.
+     * @param receiverPing The sound to play for the receiver.
+     * @param spyMsg The spy's message format.
      */
     public PrivateMessagingManager(@NotNull JavaPlugin plugin, @NotNull String senderMsg, @NotNull String receiverMsg,
                                    @Nullable SoundBundle receiverPing, @NotNull String spyMsg) {
@@ -135,6 +136,7 @@ public class PrivateMessagingManager {
     /**
      * Toggles spying for a spy that can see all private messages between players
      * @param uuid The uuid of the spy
+     * @return True if spy was toggled on. False if off.
      */
     public boolean toggleSpy(@NotNull UUID uuid) {
         if(spies.contains(uuid)) {

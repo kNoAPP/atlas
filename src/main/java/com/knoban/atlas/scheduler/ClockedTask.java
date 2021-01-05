@@ -127,6 +127,7 @@ public class ClockedTask implements Comparable<ClockedTask> {
 
     /**
      * For use by the {@link ClockedTaskManager} only!
+     * @param ran True, if this task was ran. False, if not.
      */
     protected void setWasRun(boolean ran) {
         this.ran = ran;

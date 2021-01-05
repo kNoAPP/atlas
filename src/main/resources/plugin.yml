@@ -1,5 +1,5 @@
-name: Atlas
+name: ${project.name}
 author: kNoAPP
-version: ${project.version}-${git.commit.id.abbrev}
 main: ${project.groupId}.${project.artifactId}.${project.name}
+version: ${project.version}-${git.commit.id.abbrev}
 api-version: 1.16

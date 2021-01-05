@@ -164,6 +164,7 @@ public class GUI implements Listener {
      * Should we handle releasing the Listener for this object when all players
      * viewing it have closed the GUI? By default, yes. But this is where you
      * tell us not to do that if you'd like to reuse this GUI.
+     * @param autoDestroy True, if the GUI should unregister when no one is looking at it.
      */
     public void setAutoDestroy(boolean autoDestroy) {
         this.autoDestroy = autoDestroy;

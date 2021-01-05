@@ -110,6 +110,7 @@ public final class HeldSlotListener implements Listener {
      * @param player The {@link Player} to get the callback from
      * @param item The {@link ItemStack} to get the callback of
      * @param type 0-2 type of callback
+     * @return The callback on the item
      */
     @Nullable
     public Callback getCallback(Player player, ItemStack item, int type) {

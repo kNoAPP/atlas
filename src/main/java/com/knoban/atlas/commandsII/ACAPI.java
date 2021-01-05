@@ -6,6 +6,7 @@ import com.knoban.atlas.Atlas;
 import com.knoban.atlas.claims.EstateParser;
 import com.knoban.atlas.claims.EstatePermission;
 import com.knoban.atlas.commandsII.annotations.AtlasCommand;
+import com.knoban.atlas.commandsII.annotations.AtlasParam;
 import com.knoban.atlas.commandsII.parsables.*;
 import com.knoban.atlas.structure.PQEntry;
 import org.bukkit.Bukkit;
@@ -25,11 +26,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * The ACAPI is the *only* way developers should be accessing AtlasCommands v2 (ACv2). Here, you can add/remove commands
  * and add Parsers too for custom Java Objects.
- *
+ * <br><br>
  * ACv2 commands run with different priorities. The higher the command's priority, the more likely it is to run when
  * multiple command executors' arguments have matched. Highest priority is given to commands registered first with
  * ACv2.
- *
+ * <br><br>
+ * You may also want to see the following resources on annotating an AtlasCommand. For registering a command,
+ * see {@link AtlasCommand}. For additional parameter configuration, see {@link AtlasParam}.
  * @author Alden Bansemer (kNoAPP)
  */
 public final class ACAPI implements CommandExecutor, TabExecutor {
@@ -50,6 +53,14 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
         DoubleParsable doubleParsable = new DoubleParsable();
         addParser(Double.class, doubleParsable);
         addParser(double.class, doubleParsable);
+
+        FloatParsable floatParsable = new FloatParsable();
+        addParser(Float.class, floatParsable);
+        addParser(float.class, floatParsable);
+
+        LongParsable longParsable = new LongParsable();
+        addParser(Long.class, longParsable);
+        addParser(long.class, longParsable);
 
         IntegerParsable integerParsable = new IntegerParsable();
         addParser(Integer.class, integerParsable);
@@ -76,6 +87,7 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
     /**
      * Add a way for AC to parse a custom Java Object. Currently by convention, you cannot override a ACParsable
      * once it's been added here. Additionally, added ACParsables may not be removed.
+     * @param <T> The resulting parsed class from the ACParsable.
      * @param parseTo Pass the class of the object you're trying to get
      * @param using Pass the ACParsable for ACv2 to use
      * @return True, if the parser was added. False, if a parser for the parseTo parameter already was registered
@@ -112,12 +124,12 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
      * and that order may change between different runtime environments. If multiple executors match a player's typed
      * arguments, the executor registered first is called. This is not the method you want to use if you care about
      * command priority. Instead, use {@link #registerCommandFromMethod(JavaPlugin, Method)}.
-     * <br /><br />
+     * <br><br>
      * If a method's parameters and path match an existing one's, that existing one is overridden with the one you
      * passed.
-     * <br /><br />
+     * <br><br>
      * This function will only register static AC methods in the passed class.
-     * <br /><br />
+     * <br><br>
      * If you need a specific ordering of priority for the methods within the pass class,
      * use {@link AtlasCommand#classPriority()}. The higher the number, the higher the priority to register in this
      * method.
@@ -134,12 +146,12 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
      * and that order may change between different runtime environments. If multiple executors match a player's typed
      * arguments, the executor registered first is called. This is not the method you want to use if you care about
      * command priority. Instead, use {@link #registerCommandFromMethod(JavaPlugin, Method, Object)}.
-     * <br /><br />
+     * <br><br>
      * If a method's parameters and path match an existing one's, that existing one is overridden with the one you
      * passed.
-     * <br /><br />
+     * <br><br>
      * This function will register both static AC methods and non-statics in the passed class.
-     * <br /><br />
+     * <br><br>
      * If you need a specific ordering of priority for the methods within the pass class,
      * use {@link AtlasCommand#classPriority()}. The higher the number, the higher the priority to register in this
      * method.
@@ -171,10 +183,10 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
 
     /**
      * Registers a single command to ACv2 with the passed plugin.
-     * <br /><br />
+     * <br><br>
      * If a method's parameters and path match an existing one's, that existing one is overridden with the one you
      * passed.
-     * <br /><br />
+     * <br><br>
      * This function can only register static methods. If you have a non-static, use
      * {@link #registerCommandFromMethod(JavaPlugin, Method, Object)}.
      *
@@ -187,10 +199,10 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
 
     /**
      * Registers a single command to ACv2 with the passed plugin.
-     * <br /><br />
+     * <br><br>
      * If a method's parameters and path match an existing one's, that existing one is overridden with the one you
      * passed.
-     * <br /><br />
+     * <br><br>
      * This function can only register non-static methods. If you have a static, use
      * {@link #registerCommandFromMethod(JavaPlugin, Method)}.
      *

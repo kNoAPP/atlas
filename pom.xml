@@ -7,7 +7,7 @@
 
     <groupId>com.knoban</groupId>
     <artifactId>atlas</artifactId>
-    <version>1.0.0.0</version>
+    <version>0.1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -15,29 +15,25 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <!--
-        To get this dependency to not have errors, please follow these instructions:
-        1. For this to work, you will need a Java JDK and Maven installed on your machine with environmental variables
-            set.
-        2. Somewhere on your computer, clone https://github.com/PaperMC/Paper.
-        3. Go into the cloned folder and run ./paper jar from bash. If you're on Windows, you may need to download Git
-            from https://git-scm.com/downloads to be able to run the command from the Git prompt window. This command
-            will build PaperSpigot on your computer and also drop some needed libraries into your .m2 folder.
-        4. If you see errors in the script, chances are you did not set up your JDK or Maven environments correctly.
-            Usually the most common errors are because of misconfiguration in environmental variables.
-        5. When the script completes, reload this project and the errors should go away.
-        -->
+		To get this dependency to not have errors, please follow these instructions:
+		1. For this to work, you will need a Java JDK and Maven installed on your machine with environmental variables
+			set.
+		2. Somewhere on your computer, clone https://github.com/PaperMC/Paper.
+		3. Go into the cloned folder and run ./paper jar from bash. If you're on Windows, you may need to download Git
+			from https://git-scm.com/downloads to be able to run the command from the Git prompt window. This command
+			will build PaperSpigot on your computer and also drop some needed libraries into your .m2 folder.
+		4. If you see errors in the script, chances are you did not set up your JDK or Maven environments correctly.
+			Usually the most common errors are because of misconfiguration in environmental variables.
+		5. When the script completes, reload this project and the errors should go away.
+
+		https://papermc.io/forums/t/using-nms-in-paper/5710/5
+		-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--  This is pulled through Java 8 Maven Artifact -->
@@ -51,6 +47,11 @@
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
             <version>5.5.1.201910021850-r</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -86,6 +87,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
+                <configuration>
+                    <!-- This allows us to shade jgit -->
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -113,11 +127,25 @@
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
             </plugin>
+            <!-- Generates an HTML Javadoc that developers can reference -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Used to run unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <printSummary>true</printSummary>
                 </configuration>

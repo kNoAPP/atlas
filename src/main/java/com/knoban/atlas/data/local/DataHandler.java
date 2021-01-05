@@ -109,6 +109,8 @@ public class DataHandler {
 		}
 		
 		/**
+		 * Gets up-to-date data from the file.
+		 * @param <T> The type to parse to
 		 * @param parse The class to parse the Object as
 		 * @return The current YML file (will overwrite cached file-- may cause data loss)
 		 */
@@ -129,6 +131,8 @@ public class DataHandler {
 		}
 		
 		/**
+		 * Gets a cached form of the JSON data.
+		 * @param <T> The type to parse to
 		 * @param parse The class to parse the Object as
 		 * @return The cached YML file (saves computation time)
 		 */
