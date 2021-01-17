@@ -3,7 +3,9 @@ package com.knoban.atlas;
 import com.knoban.atlas.data.local.DataHandler;
 import com.knoban.atlas.pm.PrivateMessagingManager;
 import com.knoban.atlas.utils.SoundBundle;
+import com.knoban.atlas.world.ChunkCommandHandle;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Atlas extends JavaPlugin {
@@ -20,12 +22,17 @@ public class Atlas extends JavaPlugin {
         super.onEnable();
 
         config = new DataHandler.YML(this, "/config.yml");
-        if(config.getCachedYML().getBoolean("load-pm-commands", true)) {
+        FileConfiguration fc = config.getCachedYML();
+        if(fc.getBoolean("load-pm-commands", true)) {
             privateMessagingManager = new PrivateMessagingManager(this,
                     "§e[§7You §6-> §7%to%§e] §5%msg%",
                     "§e[§7%from% §6-> §7You§e] §5%msg%",
                     new SoundBundle(Sound.ENTITY_WANDERING_TRADER_DISAPPEARED, 1F, 1F),
                     "§e[§7%from% §6-> §7%to%§e] §5%msg%");
+        }
+
+        if(fc.getBoolean("load-chunk-commands", true)) {
+            new ChunkCommandHandle(this);
         }
 
         long tEnd = System.currentTimeMillis();

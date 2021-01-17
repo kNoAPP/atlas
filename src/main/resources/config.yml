@@ -1,2 +1,3 @@
 version: ${project.version}
 load-pm-commands: true
+load-chunk-commands: true
