@@ -34,14 +34,14 @@ public class ChunkCommandHandle {
         sender.sendMessage(Message.INFO.getMessage("Chunk Help"));
         sender.sendMessage(ChatColor.DARK_GREEN + "------------------");
         sender.sendMessage(Message.HELP.getMessage("/chunk - Show all commands for chunks"));
-        sender.sendMessage(Message.HELP.getMessage("/chunk preload <range in chunks> - Preload chunks"));
+        sender.sendMessage(Message.HELP.getMessage("/chunk preload <diameter in blocks> - Preload chunks"));
         sender.sendMessage(Message.HELP.getMessage("/chunk status - Check chunk loading status"));
         sender.sendMessage(Message.HELP.getMessage("/chunk cancel - Cancel the ongoing task"));
     }
 
     private final HashMap<UUID, ChunkGenerationTask> generations = new HashMap<>();
     @AtlasCommand(paths = {"chunk preload"}, permission = PERMISSION)
-    public void cmdChunkPreload(Player sender, @AtlasParam(filter = "min:0") int range) {
+    public void cmdChunkPreload(Player sender, @AtlasParam(filter = "min:0") int diameter) {
         World world = sender.getWorld();
         Chunk center = sender.getChunk();
         UUID uuid = sender.getUniqueId();
@@ -51,7 +51,10 @@ public class ChunkCommandHandle {
             sender.sendMessage("§cA chunk task is already ongoing! §7Try /chunk cancel.");
             return;
         }
-        chunkGenerationTask = new ChunkGenerationTask(world, center.getX(), center.getZ(), range);
+
+        // Divide 16 for blocks -> chunks. Divide 2 for diameter -> radius
+        final int radiusChunks = diameter/32;
+        chunkGenerationTask = new ChunkGenerationTask(world, center.getX(), center.getZ(), radiusChunks);
         chunkGenerationTask.setCallback(() -> {
             Player player = Bukkit.getPlayer(uuid);
             if(player != null && player.isOnline()) {
@@ -62,7 +65,8 @@ public class ChunkCommandHandle {
         });
         generations.put(uuid, chunkGenerationTask);
         chunkGenerationTask.start(plugin);
-        sender.sendMessage("§aBeginning chunk generation of §2" + 4*range*range + " chunks§a!");
+
+        sender.sendMessage("§aBeginning chunk generation of §2" + diameter*diameter + " blocks§a!");
         sender.sendMessage("§eThis operation will complete in §6~" + Tools.millisToDHMS(chunkGenerationTask.getTimeLeftInMillis()) + "§e.");
     }
 
@@ -107,16 +111,16 @@ public class ChunkCommandHandle {
          * @param world The world subject to generation
          * @param centerX The x-coordinate of the center of the generation
          * @param centerZ The z-coordinate of the center of the generation
-         * @param range The number of chunks in radius around the center to generate
+         * @param radius The number of chunks in radius around the center to generate
          */
-        private ChunkGenerationTask(@NotNull World world, int centerX, int centerZ, int range) {
+        private ChunkGenerationTask(@NotNull World world, int centerX, int centerZ, int radius) {
             this.world = world;
-            this.range = range;
+            this.range = radius;
             this.centerX = centerX;
             this.centerZ = centerZ;
             this.i = 0;
-            this.dx = -range;
-            this.dz = -range;
+            this.dx = -radius;
+            this.dz = -radius;
         }
 
         @Override
