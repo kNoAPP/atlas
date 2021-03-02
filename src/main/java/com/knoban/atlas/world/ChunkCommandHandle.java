@@ -34,14 +34,20 @@ public class ChunkCommandHandle {
         sender.sendMessage(Message.INFO.getMessage("Chunk Help"));
         sender.sendMessage(ChatColor.DARK_GREEN + "------------------");
         sender.sendMessage(Message.HELP.getMessage("/chunk - Show all commands for chunks"));
-        sender.sendMessage(Message.HELP.getMessage("/chunk preload <diameter in blocks> - Preload chunks"));
+        sender.sendMessage(Message.HELP.getMessage("/chunk preload <block diameter> - Preload chunks"));
         sender.sendMessage(Message.HELP.getMessage("/chunk status - Check chunk loading status"));
         sender.sendMessage(Message.HELP.getMessage("/chunk cancel - Cancel the ongoing task"));
     }
 
     private final HashMap<UUID, ChunkGenerationTask> generations = new HashMap<>();
+
     @AtlasCommand(paths = {"chunk preload"}, permission = PERMISSION)
     public void cmdChunkPreload(Player sender, @AtlasParam(filter = "min:0") int diameter) {
+        cmdChunkPreload(sender, diameter, false);
+    }
+
+    @AtlasCommand(paths = {"chunk preload"}, permission = PERMISSION)
+    public void cmdChunkPreload(Player sender, @AtlasParam(filter = "min:0") int diameter, boolean loud) {
         World world = sender.getWorld();
         Chunk center = sender.getChunk();
         UUID uuid = sender.getUniqueId();
@@ -55,6 +61,7 @@ public class ChunkCommandHandle {
         // Divide 16 for blocks -> chunks. Divide 2 for diameter -> radius
         final int radiusChunks = diameter/32;
         chunkGenerationTask = new ChunkGenerationTask(world, center.getX(), center.getZ(), radiusChunks);
+        chunkGenerationTask.setLoud(loud);
         chunkGenerationTask.setCallback(() -> {
             Player player = Bukkit.getPlayer(uuid);
             if(player != null && player.isOnline()) {
@@ -102,6 +109,7 @@ public class ChunkCommandHandle {
         private final int range;
         private final int centerX, centerZ;
         private int i, dx, dz;
+        private boolean loud;
 
         private Runnable callback;
 
@@ -121,6 +129,7 @@ public class ChunkCommandHandle {
             this.i = 0;
             this.dx = -radius;
             this.dz = -radius;
+            this.loud = false;
         }
 
         @Override
@@ -139,9 +148,17 @@ public class ChunkCommandHandle {
                 ++dx;
             }
 
-            Chunk c = world.getChunkAt(centerX+(dx*16), centerZ+(dz*16)); // Generate chunk
+            final int x = centerX+(dx*16);
+            final int z = centerZ+(dz*16);
+            if(loud)
+                Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + x + ", " + z + ")...");
+            Chunk c = world.getChunkAt(x,z); // Generate chunk
             c.load(true);
             if(i % 100 == 0) { // Save world every 100 chunks just in case.
+                if(loud)
+                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Checkpoint reached ("
+                            + String.format("%.2f", getPercentComplete()*100f)
+                            + "% complete). Saving world...");
                 world.save();
             }
 
@@ -164,6 +181,15 @@ public class ChunkCommandHandle {
          */
         public void start(@NotNull Plugin pl) {
             this.runTaskTimer(pl, 0L, 1L);
+        }
+
+        /**
+         * Loud chunk generation reports each individual chunk to the console when generated. This allows
+         * a user to track progress in console, but could be considered spammy.
+         * @param loud True, if details should be printed to console.
+         */
+        public void setLoud(boolean loud) {
+            this.loud = loud;
         }
 
         /**
