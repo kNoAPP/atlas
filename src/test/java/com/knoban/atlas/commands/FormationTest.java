@@ -1,6 +1,5 @@
 package com.knoban.atlas.commands;
 
-import com.knoban.atlas.commands.Formation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
