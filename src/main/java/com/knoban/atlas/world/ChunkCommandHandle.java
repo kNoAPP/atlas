@@ -125,8 +125,8 @@ public class ChunkCommandHandle {
         private ChunkGenerationTask(@NotNull World world, int centerX, int centerZ, int radius) {
             this.world = world;
             this.radius = radius;
-            this.centerX = centerX;
-            this.centerZ = centerZ;
+            this.centerX = (centerX / 16) * 16;
+            this.centerZ = (centerZ / 16) * 16;
             this.i = this.j = 0;
             this.dx = -radius;
             this.dz = -radius;
@@ -159,9 +159,11 @@ public class ChunkCommandHandle {
                     ++dx;
                 }
 
-                Chunk c = world.getChunkAt(centerX+(dx*16),centerZ+(dz*16)); // Generate chunk
+                final int x = centerX+(dx*16);
+                final int z = centerZ+(dz*16);
                 if(loud)
-                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + c.getX() + ", " + c.getZ() + ")...");
+                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + x + ", " + z + ")...");
+                Chunk c = world.getChunkAt(x, z); // Generate chunk
                 c.load(true);
                 c.unload(true);
                 if(j % 100 == 0) { // Save world every 100 chunks just in case.
