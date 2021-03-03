@@ -138,7 +138,7 @@ public class ChunkCommandHandle {
         public void run() {
             finish = System.currentTimeMillis();
             // Recalculate how behind the TPS is (max 30s).
-            overheadTPS = Math.max(0, Math.min(30000, overheadTPS + (finish - start) - 50));
+            overheadTPS = Math.max(0, Math.min(30000, overheadTPS + (finish - start) - (50 + 10))); // 50ms each tick, 10ms extra forgiveness
 
             start = System.currentTimeMillis();
             // Skip a cycle if the server is behind, but guarantee one chunk of progress every 15s minimum.
@@ -159,11 +159,9 @@ public class ChunkCommandHandle {
                     ++dx;
                 }
 
-                final int x = centerX+(dx*16);
-                final int z = centerZ+(dz*16);
+                Chunk c = world.getChunkAt(centerX+(dx*16),centerZ+(dz*16)); // Generate chunk
                 if(loud)
-                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + x + ", " + z + ")...");
-                Chunk c = world.getChunkAt(x,z); // Generate chunk
+                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + c.getX() + ", " + c.getZ() + ")...");
                 c.load(true);
                 c.unload(true);
                 if(j % 100 == 0) { // Save world every 100 chunks just in case.
