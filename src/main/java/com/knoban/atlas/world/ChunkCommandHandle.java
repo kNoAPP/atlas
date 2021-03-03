@@ -46,7 +46,7 @@ public class ChunkCommandHandle {
         cmdChunkPreload(sender, diameter, false);
     }
 
-    @AtlasCommand(paths = {"chunk preload"}, permission = PERMISSION)
+    @AtlasCommand(paths = {"chunk preload"}, permission = PERMISSION, classPriority = 1)
     public void cmdChunkPreload(Player sender, @AtlasParam(filter = "min:0") int diameter, boolean loud) {
         World world = sender.getWorld();
         Chunk center = sender.getChunk();
@@ -106,9 +106,10 @@ public class ChunkCommandHandle {
     private static final class ChunkGenerationTask extends BukkitRunnable {
 
         private final World world;
-        private final int range;
+        private final int radius;
         private final int centerX, centerZ;
-        private int i, dx, dz;
+        private int i, j, dx, dz;
+        private long start, finish, overheadTPS;
         private boolean loud;
 
         private Runnable callback;
@@ -123,46 +124,60 @@ public class ChunkCommandHandle {
          */
         private ChunkGenerationTask(@NotNull World world, int centerX, int centerZ, int radius) {
             this.world = world;
-            this.range = radius;
+            this.radius = radius;
             this.centerX = centerX;
             this.centerZ = centerZ;
-            this.i = 0;
+            this.i = this.j = 0;
             this.dx = -radius;
             this.dz = -radius;
             this.loud = false;
+            this.start = this.finish = System.currentTimeMillis();
         }
 
         @Override
         public void run() {
-            if(dx >= range) {
-                world.save();
-                this.cancel();
+            finish = System.currentTimeMillis();
+            // Recalculate how behind the TPS is (max 30s).
+            overheadTPS = Math.max(0, Math.min(30000, overheadTPS + (finish - start) - 50));
 
-                if(callback != null)
-                    callback.run();
-                return;
-            }
+            start = System.currentTimeMillis();
+            // Skip a cycle if the server is behind, but guarantee one chunk of progress every 15s minimum.
+            if(overheadTPS < 50 || i%300 == 0) {
+                if(dx >= radius) {
+                    if(loud)
+                        Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Finished generation! Saving world...");
+                    world.save();
+                    this.cancel();
 
-            if(dz >= range) {
-                dz = -range;
-                ++dx;
-            }
+                    if(callback != null)
+                        callback.run();
+                    return;
+                }
 
-            final int x = centerX+(dx*16);
-            final int z = centerZ+(dz*16);
-            if(loud)
-                Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + x + ", " + z + ")...");
-            Chunk c = world.getChunkAt(x,z); // Generate chunk
-            c.load(true);
-            if(i % 100 == 0) { // Save world every 100 chunks just in case.
+                if(dz >= radius) {
+                    dz = -radius;
+                    ++dx;
+                }
+
+                final int x = centerX+(dx*16);
+                final int z = centerZ+(dz*16);
                 if(loud)
-                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Checkpoint reached ("
-                            + String.format("%.2f", getPercentComplete()*100f)
-                            + "% complete). Saving world...");
-                world.save();
+                    Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Generating chunk (" + x + ", " + z + ")...");
+                Chunk c = world.getChunkAt(x,z); // Generate chunk
+                c.load(true);
+                c.unload(true);
+                if(j % 100 == 0) { // Save world every 100 chunks just in case.
+                    if(loud)
+                        Bukkit.getConsoleSender().sendMessage("§e[ACG] §7Checkpoint reached ("
+                                + String.format("%.2f", getPercentComplete()*100f)
+                                + "% complete). Saving world...");
+                    world.save();
+                }
+
+                ++dz;
+                ++j;
             }
 
-            ++dz;
             ++i;
         }
 
@@ -180,6 +195,8 @@ public class ChunkCommandHandle {
          * @param pl The plugin scheduling the task
          */
         public void start(@NotNull Plugin pl) {
+            start = System.currentTimeMillis();
+            i = j = 0;
             this.runTaskTimer(pl, 0L, 1L);
         }
 
@@ -196,14 +213,14 @@ public class ChunkCommandHandle {
          * @return A percentage 0.0f to 1.0f of how complete the task is
          */
         public float getPercentComplete() {
-            return (float)i / (4f*range*range);
+            return (float)j / (4f* radius * radius);
         }
 
         /**
          * @return The number of milliseconds projected to remain in the task
          */
         public long getTimeLeftInMillis() {
-            return (4L*range*range - i) * 50L;
+            return (4L*radius*radius - j) * 50L;
         }
     }
 }
