@@ -21,7 +21,7 @@ public class Cooldown {
 	public void setCompletionTask(Callback task) {
 		cancelCompletionTask();
 
-		clockedTask = new ClockedTask(finish, task);
+		clockedTask = new ClockedTask(finish, 0, false, task);
 		ClockedTaskManager.getManager().addTask(clockedTask);
 	}
 
