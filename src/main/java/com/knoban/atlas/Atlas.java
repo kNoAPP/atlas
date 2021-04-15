@@ -1,7 +1,11 @@
 package com.knoban.atlas;
 
 import com.knoban.atlas.data.local.DataHandler;
+import com.knoban.atlas.missions.Missions;
+import com.knoban.atlas.missions.impl.*;
 import com.knoban.atlas.pm.PrivateMessagingManager;
+import com.knoban.atlas.rewards.Rewards;
+import com.knoban.atlas.rewards.impl.ItemStackReward;
 import com.knoban.atlas.utils.SoundBundle;
 import com.knoban.atlas.world.ChunkCommandHandle;
 import org.bukkit.Sound;
@@ -35,6 +39,9 @@ public class Atlas extends JavaPlugin {
             new ChunkCommandHandle(this);
         }
 
+        registerDefaultMissions();
+        registerDefaultRewards();
+
         long tEnd = System.currentTimeMillis();
         getLogger().info("Successfully Enabled! (" + (tEnd - tStart) + " ms)");
     }
@@ -45,6 +52,26 @@ public class Atlas extends JavaPlugin {
         super.onDisable();
         long tEnd = System.currentTimeMillis();
         getLogger().info("Successfully Disabled! (" + (tEnd - tStart) + " ms)");
+    }
+
+    /**
+     * Atlas comes with a few missions already created for other developers. We need to register those here.
+     */
+    private void registerDefaultMissions() {
+        Missions missions = Missions.getInstance();
+        missions.addMission(BlockBreakMission.class);
+        missions.addMission(BlockPlaceMission.class);
+        missions.addMission(DestinationMission.class);
+        missions.addMission(FishMission.class);
+        missions.addMission(KillEntityMission.class);
+    }
+
+    /**
+     * Atlas comes with a few rewards already created for other developers. We need to register those here.
+     */
+    private void registerDefaultRewards() {
+        Rewards rewards = Rewards.getInstance();
+        rewards.addReward(ItemStackReward.class);
     }
 
     public static Atlas getInstance() {
