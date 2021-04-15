@@ -78,9 +78,25 @@ public abstract class Mission implements Listener, Comparable<Mission> {
                 Long value = snapshot.getValue(Long.class);
                 Long newValue = value != null ? value : 0L;
 
+                /**
+                 * What if the same player is on two servers concurrently connected to the same firebase instance?
+                 * They both try to complete the same mission. Thanks to realtime database alerts, one will complete
+                 * first and notify the other. So in this case, we don't want to call setProgress because it could
+                 * duplicate the rewards. We want to award the player on one server, and lock the mission on the others.
+                 *
+                 * But, if I manually enter a number into the database lower than the max mission progress, then we
+                 * do want to notify the player with the setProgress method. Since we don't alert other instances on
+                 * partial progress, its safe to assume seeing partial progress alerts means someone manually entered
+                 * that data into the database.
+                 */
                 Player p = Bukkit.getPlayer(uuid);
                 if(p != null) // If they aren't online, don't bother.
-                    plugin.getServer().getScheduler().runTask(plugin, () -> setProgress(p, newValue));
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        if(newValue >= maxProgress)
+                            progressMap.put(uuid, newValue);
+                        else
+                            setProgress(p, newValue);
+                    });
             }
 
             @Override
@@ -279,16 +295,24 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     public void setProgress(@NotNull Player p, long newProgress) {
         Long oldProgress = progressMap.get(p.getUniqueId());
         progressMap.put(p.getUniqueId(), newProgress);
-        if(oldProgress == null) {
-            if(newProgress >= maxProgress)
-                return;
-
+        if(oldProgress == null)
             oldProgress = 0L;
-        }
         if(oldProgress >= maxProgress)
             return;
 
         incrementProgressAnimation(p, oldProgress, newProgress);
+        if(newProgress >= maxProgress) {
+            // Mission complete!
+            reference.child(p.getUniqueId().toString()).setValue(newProgress, (error, ref) -> { // Save data
+                if(error != null)
+                    plugin.getLogger().warning("Problem with player mission data (" + uuid + "): " + error.getMessage());
+            });
+
+            p.sendMessage("§dCongratulations! §7You've completed a mission.");
+            p.sendMessage(getDisplay());
+
+            reward.reward(p);
+        }
     }
 
     /**
@@ -309,6 +333,18 @@ public abstract class Mission implements Listener, Comparable<Mission> {
         progressMap.put(p.getUniqueId(), newProgress);
 
         incrementProgressAnimation(p, oldProgress, newProgress);
+        if(newProgress >= maxProgress) {
+            // Mission complete!
+            reference.child(p.getUniqueId().toString()).setValue(newProgress, (error, ref) -> { // Save data
+                if(error != null)
+                    plugin.getLogger().warning("Problem with player mission data (" + uuid + "): " + error.getMessage());
+            });
+
+            p.sendMessage("§dCongratulations! §7You've completed a mission.");
+            p.sendMessage(getDisplay());
+
+            reward.reward(p);
+        }
     }
 
     /**
@@ -327,14 +363,6 @@ public abstract class Mission implements Listener, Comparable<Mission> {
      */
     private void incrementProgressAnimation(@NotNull Player p, long oldValue, long newValue) {
         animationHandler.playAnimation(p, this.uuid, oldValue, newValue, maxProgress);
-
-        if(newValue >= maxProgress) {
-            // Mission complete!
-            p.sendMessage("§dCongratulations! §7You've completed a mission.");
-            p.sendMessage(getDisplay());
-
-            reward.reward(p);
-        }
     }
 
     /**

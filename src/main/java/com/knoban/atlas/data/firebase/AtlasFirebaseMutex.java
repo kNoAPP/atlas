@@ -42,7 +42,7 @@ public abstract class AtlasFirebaseMutex {
     private final Logger logger;
 
     protected UUID thisMutex;
-    private ListenerRegistration mutexListener;
+    private ListenerRegistration mutexListener, karenListener;
     private Thread timeout;
 
     /**
@@ -100,11 +100,11 @@ public abstract class AtlasFirebaseMutex {
      * told to piss off. Anyone waiting for the mutex will be told they can't have it. They will need to rejoin the
      * line again.
      */
-    protected void clearMutex() {
+    protected void clearMutex(@NotNull GenericCallback1<Boolean> callback) {
         if(thisMutex == null)
             return;
 
-        firestore.runTransaction(transaction -> {
+        ApiFuture<Void> future = firestore.runTransaction(transaction -> {
             DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
             ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
             if(mutex == null)
@@ -116,6 +116,19 @@ public abstract class AtlasFirebaseMutex {
             transaction.set(firestoreReference, map, SetOptions.merge());
             return null;
         });
+
+        ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
+            @Override
+            public void onFailure(Throwable t) {
+                logger.warning("Failed to karen mutex: " + t.getMessage());
+                callback.call(false);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                callback.call(true);
+            }
+        }, MoreExecutors.directExecutor());
     }
 
     /**
@@ -125,6 +138,11 @@ public abstract class AtlasFirebaseMutex {
     protected void removeMutex(boolean block) {
         if(thisMutex == null)
             return;
+
+        if(karenListener != null) {
+            karenListener.remove();
+            karenListener = null;
+        }
 
         ApiFuture<Void> future = firestore.runTransaction(transaction -> {
             DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
@@ -144,14 +162,12 @@ public abstract class AtlasFirebaseMutex {
                 thisMutex = null;
             } catch(InterruptedException | ExecutionException e) {
                 logger.warning("Failed to remove mutex: " + e.getMessage());
-                thisMutex = null;
             }
         } else {
             ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
                 @Override
                 public void onFailure(Throwable t) {
                     logger.warning("Failed to remove mutex: " + t.getMessage());
-                    thisMutex = null;
                 }
 
                 @Override
@@ -188,8 +204,7 @@ public abstract class AtlasFirebaseMutex {
             mutexListener.remove();
             if(karen) {
                 logger.warning("A mutex has been force-loaded. Possible data inconsistencies may now occur.");
-                clearMutex();
-                callback.call(true);
+                clearMutex(callback);
             } else {
                 removeMutex(false);
                 callback.call(false);
@@ -229,6 +244,42 @@ public abstract class AtlasFirebaseMutex {
             // Don't use a hammer for a screw. Use a screwdriver.
             if(timeoutMillis >= 0 && timeout.getState() == Thread.State.NEW)
                 timeout.start();
+        });
+    }
+
+    /**
+     * This method can be used to be notified if a Karen cuts you while you're holding the mutex. It will fire
+     * a callback with "true" if you've lost the mutex to a Karen. Or it will fire a callback with "false" if there's
+     * been a listening error and you may or may not still have the mutex.
+     * <br><br>
+     * If you call this method without holding the mutex, it will immediately callback with a "true." If this function
+     * calls you back, it will automatically clean up the Karen listener. BUT! If you never lose the mutex, this method
+     * will never callback and it will never clean itself up. In this case, ensure you call
+     * {@link #removeMutex(boolean)}.
+     *
+     * Callback occurs on another thread.
+     * @param callback The callback to alert for karens. Passes true if you've lost the mutex. False if error.
+     */
+    protected void listenForKarens(@NotNull GenericCallback1<Boolean> callback) {
+        if(thisMutex == null || karenListener != null)
+            return;
+
+        this.karenListener = firestoreReference.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                logger.warning("Failed to listen for karen: " + error.getMessage());
+                karenListener.remove();
+                callback.call(false);
+                return;
+            }
+
+            if(value != null) {
+                Map<String, Object> data = value.getData();
+                ArrayList<String> mutex = (ArrayList<String>) data.get("mutex");
+                if(mutex == null || thisMutex == null || mutex.size() <= 0 || !mutex.get(0).equals(thisMutex.toString())) {
+                    karenListener.remove();
+                    callback.call(true);
+                }
+            }
         });
     }
 }
