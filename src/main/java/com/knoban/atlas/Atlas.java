@@ -6,6 +6,7 @@ import com.knoban.atlas.missions.impl.*;
 import com.knoban.atlas.pm.PrivateMessagingManager;
 import com.knoban.atlas.rewards.Rewards;
 import com.knoban.atlas.rewards.impl.ItemStackReward;
+import com.knoban.atlas.scheduler.AnnouncementManager;
 import com.knoban.atlas.utils.SoundBundle;
 import com.knoban.atlas.world.ChunkCommandHandle;
 import org.bukkit.Sound;
@@ -38,6 +39,8 @@ public class Atlas extends JavaPlugin {
         if(fc.getBoolean("load-chunk-commands", true)) {
             new ChunkCommandHandle(this);
         }
+
+        AnnouncementManager.getAnnouncementManager(); // Warm-up announcement manager
 
         registerDefaultMissions();
         registerDefaultRewards();
