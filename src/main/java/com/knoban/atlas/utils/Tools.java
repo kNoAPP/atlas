@@ -2,6 +2,7 @@ package com.knoban.atlas.utils;
 
 import com.knoban.atlas.world.Coordinate;
 import joptsimple.internal.Strings;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -398,8 +399,8 @@ public class Tools {
 	 * @param rightCharacter Character for right side
 	 * @return The generated wait-bar String
 	 */
-	public static String generateWaitBar(double prct, double total, ChatColor leftColor, char leftCharacter,
-										 ChatColor rightColor, char rightCharacter) {
+	public static Component generateWaitBar(double prct, double total, ChatColor leftColor, char leftCharacter,
+											ChatColor rightColor, char rightCharacter) {
 		StringBuilder sb = new StringBuilder();
 		double i;
 
@@ -412,7 +413,7 @@ public class Tools {
 			sb.append(rightCharacter);
 		}
 
-		return sb.toString();
+		return Component.text(sb.toString());
 	}
 
 	public static Block floor(Block b) {
