@@ -1,7 +1,6 @@
 package com.knoban.atlas.utils;
 
 import com.knoban.atlas.world.Coordinate;
-import joptsimple.internal.Strings;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -333,7 +332,7 @@ public class Tools {
         return nmsClass;
     }
     
-    public static void projTrail(Plugin pl, Projectile proj, Particle[] particles) {
+    public static void projTrail(Plugin pl, final Projectile proj, final Particle[] particles) {
 		new BukkitRunnable() {
 			public void run() {
 				if(proj != null && proj.isValid() && !proj.isDead()) 
@@ -466,132 +465,7 @@ public class Tools {
 	}
 
 	public static Material getSpawnEgg(EntityType et) {
-		switch(et) {
-			case BAT:
-				return Material.BAT_SPAWN_EGG;
-			case BEE:
-				return Material.BEE_SPAWN_EGG;
-			case BLAZE:
-				return Material.BLAZE_SPAWN_EGG;
-			case CAT:
-				return Material.CAT_SPAWN_EGG;
-			case CAVE_SPIDER:
-				return Material.CAVE_SPIDER_SPAWN_EGG;
-			case CHICKEN:
-				return Material.CHICKEN_SPAWN_EGG;
-			case COD:
-				return Material.COD_SPAWN_EGG;
-			case COW:
-				return Material.COW_SPAWN_EGG;
-			case CREEPER:
-				return Material.CREEPER_SPAWN_EGG;
-			case DOLPHIN:
-				return Material.DOLPHIN_SPAWN_EGG;
-			case DONKEY:
-				return Material.DONKEY_SPAWN_EGG;
-			case DROWNED:
-				return Material.DROWNED_SPAWN_EGG;
-			case ELDER_GUARDIAN:
-				return Material.ELDER_GUARDIAN_SPAWN_EGG;
-			case ENDERMAN:
-				return Material.ENDERMAN_SPAWN_EGG;
-			case ENDERMITE:
-				return Material.ENDERMITE_SPAWN_EGG;
-			case EVOKER:
-				return Material.EVOKER_SPAWN_EGG;
-			case FOX:
-				return Material.FOX_SPAWN_EGG;
-			case GHAST:
-				return Material.GHAST_SPAWN_EGG;
-			case GUARDIAN:
-				return Material.GUARDIAN_SPAWN_EGG;
-			case HOGLIN:
-				return Material.HOGLIN_SPAWN_EGG;
-			case HORSE:
-				return Material.HORSE_SPAWN_EGG;
-			case HUSK:
-				return Material.HUSK_SPAWN_EGG;
-			case LLAMA:
-				return Material.LLAMA_SPAWN_EGG;
-			case MAGMA_CUBE:
-				return Material.MAGMA_CUBE_SPAWN_EGG;
-			case MUSHROOM_COW:
-				return Material.MOOSHROOM_SPAWN_EGG;
-			case MULE:
-				return Material.MULE_SPAWN_EGG;
-			case OCELOT:
-				return Material.OCELOT_SPAWN_EGG;
-			case PANDA:
-				return Material.PANDA_SPAWN_EGG;
-			case PARROT:
-				return Material.PARROT_SPAWN_EGG;
-			case PHANTOM:
-				return Material.PHANTOM_SPAWN_EGG;
-			case PIG:
-				return Material.PIG_SPAWN_EGG;
-			case PILLAGER:
-				return Material.PILLAGER_SPAWN_EGG;
-			case POLAR_BEAR:
-				return Material.POLAR_BEAR_SPAWN_EGG;
-			case PUFFERFISH:
-				return Material.PUFFERFISH_SPAWN_EGG;
-			case RABBIT:
-				return Material.RABBIT_SPAWN_EGG;
-			case RAVAGER:
-				return Material.RAVAGER_SPAWN_EGG;
-			case SALMON:
-				return Material.SALMON_SPAWN_EGG;
-			case SHEEP:
-				return Material.SHEEP_SPAWN_EGG;
-			case SHULKER:
-				return Material.SHULKER_SPAWN_EGG;
-			case SILVERFISH:
-				return Material.SILVERFISH_SPAWN_EGG;
-			case SKELETON:
-				return Material.SKELETON_SPAWN_EGG;
-			case SKELETON_HORSE:
-				return Material.SKELETON_HORSE_SPAWN_EGG;
-			case SLIME:
-				return Material.SLIME_SPAWN_EGG;
-			case SPIDER:
-				return Material.SPIDER_SPAWN_EGG;
-			case SQUID:
-				return Material.SQUID_SPAWN_EGG;
-			case STRAY:
-				return Material.STRAY_SPAWN_EGG;
-			case TRADER_LLAMA:
-				return Material.TRADER_LLAMA_SPAWN_EGG;
-			case TROPICAL_FISH:
-				return Material.TROPICAL_FISH_SPAWN_EGG;
-			case TURTLE:
-				return Material.TURTLE_SPAWN_EGG;
-			case VEX:
-				return Material.VEX_SPAWN_EGG;
-			case VILLAGER:
-				return Material.VILLAGER_SPAWN_EGG;
-			case VINDICATOR:
-				return Material.VINDICATOR_SPAWN_EGG;
-			case WANDERING_TRADER:
-				return Material.WANDERING_TRADER_SPAWN_EGG;
-			case WITCH:
-				return Material.WITCH_SPAWN_EGG;
-			case WITHER_SKELETON:
-				return Material.WITHER_SKELETON_SPAWN_EGG;
-			case WOLF:
-				return Material.WOLF_SPAWN_EGG;
-			case ZOMBIE:
-				return Material.ZOMBIE_SPAWN_EGG;
-			case ZOMBIE_HORSE:
-				return Material.ZOMBIE_HORSE_SPAWN_EGG;
-			case ZOGLIN:
-				return Material.ZOGLIN_SPAWN_EGG;
-			case ZOMBIFIED_PIGLIN:
-				return Material.ZOMBIFIED_PIGLIN_SPAWN_EGG;
-			case ZOMBIE_VILLAGER:
-				return Material.ZOMBIE_VILLAGER_SPAWN_EGG;
-			default:
-				return null;
-		}
+		return Material.valueOf(et.name() + "_SPAWN_EGG");
 	}
 
 	public static String enumNameToHumanReadable(String enumName) {
@@ -606,7 +480,7 @@ public class Tools {
 			nameParts[i] = Character.toUpperCase(nameParts[i].charAt(0)) + nameParts[i].substring(1);
 		}
 
-		return Strings.join(nameParts, " ");
+		return String.join(" ", nameParts);
 	}
 
 	public static String millisToDHMS(long millis) {
