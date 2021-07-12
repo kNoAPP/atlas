@@ -12,12 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone Atlas
-        uses: actions/checkout@v2
-        with:
-          repository: kNoAPP/Atlas
-          token: ${{ secrets.PAT_GITHUB }}
-          path: Atlas
       - name: Setup JDK 16
         uses: actions/setup-java@v2
         with:
@@ -31,6 +25,12 @@ jobs:
             ~/.m2/repository
           key: ${{ runner.os }}-Atlas-${{ hashFiles('**/Atlas/pom.xml') }}
           restore-keys: ${{ runner.os }}-Atlas-
+      - name: Clone Atlas
+        uses: actions/checkout@v2
+        with:
+          repository: kNoAPP/Atlas
+          token: ${{ secrets.PAT_GITHUB }}
+          path: Atlas
       - name: Build Atlas
         run: |
           cd Atlas
