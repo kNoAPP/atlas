@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,6 @@ import java.util.HashSet;
  */
 public class GUI implements Listener {
 
-    private JavaPlugin plugin;
     private HashSet<Player> viewers = new HashSet<>();
     private Callback onCloseCallback, onDestroyCallback;
     private Inventory inv;
@@ -39,7 +38,7 @@ public class GUI implements Listener {
      * @param title The title of the inventory container (appears at the top)
      * @param invSize Size of the inventory (ex. 9, 18, 24, 36, etc.)
      */
-    public GUI(@NotNull JavaPlugin plugin, @NotNull String title, int invSize) {
+    public GUI(@NotNull Plugin plugin, @NotNull String title, int invSize) {
         this(plugin, title, invSize, null, null, null, null);
     }
 
@@ -53,7 +52,7 @@ public class GUI implements Listener {
      * @param nonInteractionSound Add a non-interaction sound for non-action ItemStacks (can be null)
      * @param playerInvSound Add a sound for when a player clicks in their inventory and not the GUI (can be null)
      */
-    public GUI(@NotNull JavaPlugin plugin, @NotNull String title, int invSize,
+    public GUI(@NotNull Plugin plugin, @NotNull String title, int invSize,
                @Nullable SoundBundle openGUISound,
                @Nullable SoundBundle closeGUISound,
                @Nullable SoundBundle nonInteractionSound,

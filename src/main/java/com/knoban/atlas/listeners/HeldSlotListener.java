@@ -1,7 +1,6 @@
 package com.knoban.atlas.listeners;
 
 import com.knoban.atlas.Atlas;
-import com.knoban.atlas.callbacks.Callback;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

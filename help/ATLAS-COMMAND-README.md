@@ -107,7 +107,7 @@ A `FormationBuilder` has the following functions you can use the generate the Fo
 When you are ready to generate the command `Formation`, add a `build()` call to the end of the FormationBuilder. Pass the 
 returned Formation to your overridden `getFormation(CommandSender)` function. It is recommended to use a `private static 
 final Formation` if your Formation is not dependent on additional data. This way a new `Formation` is not built each 
-function call. However, if (for example) your command is dependent on the CommandSender, you may use the passed 
+function call. However, if(for example) your command is dependent on the CommandSender, you may use the passed 
 `CommandSender sender` to generate a dynamic Formation for your `AtlasCommand`.
 
 If a executed command does not meet the criteria of the Formation or does not match the `length` `CommandInfo` property, 

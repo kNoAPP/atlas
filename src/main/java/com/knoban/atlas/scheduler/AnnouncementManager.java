@@ -4,6 +4,7 @@ import com.knoban.atlas.Atlas;
 import com.knoban.atlas.data.local.DataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public final class AnnouncementManager {
 
     private static final AnnouncementManager MANAGER = new AnnouncementManager(Atlas.getInstance());
 
-    private JavaPlugin plugin;
+    private Plugin plugin;
     private BukkitTask loop;
     private List<String> announcements = new ArrayList<>();
     private int nextAnnouncementIndex;
@@ -33,7 +34,7 @@ public final class AnnouncementManager {
      * Singleton constructor for making the AnnouncementManager
      * @param plugin An instance of the registering plugin
      */
-    private AnnouncementManager(@NotNull JavaPlugin plugin) {
+    private AnnouncementManager(@NotNull Plugin plugin) {
         this.plugin = plugin;
 
         FileConfiguration yml = new DataHandler.YML(plugin, "/announcements.yml").getCachedYML();

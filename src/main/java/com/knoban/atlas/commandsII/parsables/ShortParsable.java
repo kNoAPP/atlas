@@ -27,11 +27,11 @@ public class ShortParsable implements ACParsable<Short> {
     @Override
     public @Nullable String filter(@NotNull CommandSender sender, @NotNull Short parsed, @NotNull String filter) {
         String[] fields = filter.split(",");
-        for (String field : fields) {
-            if (field.startsWith(RANGE_FILTER)) {
+        for(String field : fields) {
+            if(field.startsWith(RANGE_FILTER)) {
                 String unparsed = field.substring(RANGE_FILTER.length());
                 String[] minMax = unparsed.split("to");
-                if (minMax.length != 2) {
+                if(minMax.length != 2) {
                     System.out.println("AtlasParam filter contains an unrecognizable range value!");
                     System.out.println(Thread.currentThread().getStackTrace());
                     return "Internal error. See Console.";
@@ -40,29 +40,29 @@ public class ShortParsable implements ACParsable<Short> {
                 try {
                     Short min = Short.parseShort(minMax[0]);
                     Short max = Short.parseShort(minMax[1]);
-                    if (parsed < min || max < parsed)
+                    if(parsed < min || max < parsed)
                         return "Must be between " + min + " and " + max + ".";
                 } catch (NumberFormatException e) {
                     System.out.println("AtlasParam filter contains an unrecognizable range value!");
                     e.printStackTrace();
                     return "Internal error. See Console.";
                 }
-            } else if (field.startsWith(MIN_FILTER)) {
+            } else if(field.startsWith(MIN_FILTER)) {
                 String unparsed = field.substring(MIN_FILTER.length());
                 try {
                     Short min = Short.parseShort(unparsed);
-                    if (parsed < min)
+                    if(parsed < min)
                         return "Must be greater than " + min + ".";
                 } catch (NumberFormatException e) {
                     System.out.println("AtlasParam filter contains an unrecognizable min value!");
                     e.printStackTrace();
                     return "Internal error. See Console.";
                 }
-            } else if (field.startsWith(MAX_FILTER)) {
+            } else if(field.startsWith(MAX_FILTER)) {
                 String unparsed = field.substring(MAX_FILTER.length());
                 try {
                     Short max = Short.parseShort(unparsed);
-                    if (parsed > max)
+                    if(parsed > max)
                         return "Must be less than " + max + ".";
                 } catch (NumberFormatException e) {
                     System.out.println("AtlasParam filter contains an unrecognizable max value!");
