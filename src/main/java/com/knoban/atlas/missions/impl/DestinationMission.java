@@ -7,6 +7,7 @@ import com.knoban.atlas.missions.bossbar.BossBarAnimationHandler;
 import com.knoban.atlas.utils.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -33,6 +34,7 @@ public class DestinationMission extends Mission {
                               @NotNull Map<String, Object> missionData) {
         super(plugin, animationHandler, reference, uuid, missionData);
         this.maxProgress = 1000L;
+        this.material = Material.SPYGLASS;
 
         String worldName = (String) extraData.getOrDefault("world", "world");
         int x = ((Long) extraData.getOrDefault("x", 0L)).intValue();
