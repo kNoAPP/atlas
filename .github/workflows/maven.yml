@@ -28,7 +28,6 @@ jobs:
       - name: Clone Atlas
         uses: actions/checkout@v2
         with:
-          repository: kNoAPP/Atlas
           token: ${{ secrets.PAT_GITHUB }}
           path: Atlas
       - name: Build Atlas
