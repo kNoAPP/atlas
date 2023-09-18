@@ -1,7 +1,5 @@
 package com.knoban.atlas.commandsII;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.knoban.atlas.Atlas;
 import com.knoban.atlas.claims.EstateParser;
 import com.knoban.atlas.claims.EstatePermission;
@@ -35,13 +33,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * see {@link AtlasCommand}. For additional parameter configuration, see {@link AtlasParam}.
  * @author Alden Bansemer (kNoAPP)
  */
-public final class ACAPI implements CommandExecutor, TabExecutor {
+public final class ACAPI implements TabExecutor {
 
     private static final ACAPI api = new ACAPI();
 
     private final HashMap<Class<?>, ACParsable<?>> parsingClasses = new HashMap<>();
     private final ACTree commandTree = new ACTree();
-    private final Timing suggestionsTiming = Timings.of(JavaPlugin.getProvidingPlugin(getClass()), "AtlasCommand - suggestions");
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private ACAPI() {
@@ -398,11 +395,9 @@ public final class ACAPI implements CommandExecutor, TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         lock.readLock().lock();
-        suggestionsTiming.startTiming();
         try {
             return commandTree.getSuggestions(sender, label, args);
         } finally {
-            suggestionsTiming.stopTiming();
             lock.readLock().unlock();
         }
     }

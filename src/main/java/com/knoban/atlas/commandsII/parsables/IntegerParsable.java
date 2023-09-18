@@ -79,7 +79,7 @@ public class IntegerParsable implements ACParsable<Integer> {
 
     @NotNull
     @Override
-    public Optional getOvercastName() {
+    public Optional<String> getOvercastName() {
         return Optional.of("Whole #");
     }
 }

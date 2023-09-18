@@ -2,7 +2,7 @@ package com.knoban.atlas.structure;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PQEntry<T> implements Comparable<PQEntry> {
+public class PQEntry<T> implements Comparable<PQEntry<T>> {
 
     private T value;
     private String extra;
@@ -34,7 +34,7 @@ public class PQEntry<T> implements Comparable<PQEntry> {
     }
 
     @Override
-    public int compareTo(@NotNull PQEntry o) {
+    public int compareTo(@NotNull PQEntry<T> o) {
         int compare = priority.compareTo(o.priority);
         if(compare != 0)
             return compare;

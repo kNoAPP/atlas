@@ -2,4 +2,4 @@ name: ${project.name}
 author: kNoAPP
 main: ${project.groupId}.${project.artifactId}.${project.name}
 version: ${project.version}-${git.commit.id.abbrev}
-api-version: 1.16
+api-version: 1.20

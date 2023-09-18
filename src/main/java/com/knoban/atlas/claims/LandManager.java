@@ -3,7 +3,7 @@ package com.knoban.atlas.claims;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -262,7 +262,7 @@ public class LandManager implements Listener {
         }
 
         for(File f : Objects.requireNonNull(dataFolder.listFiles())) {
-            if(FileUtils.getExtension(f.getName()).equalsIgnoreCase("json")) {
+            if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase("json")) {
                 try {
                     Landlord landlord = lm.getJSON(f, Landlord.class);
                     lm.landlords.put(landlord.getUUID(), landlord);

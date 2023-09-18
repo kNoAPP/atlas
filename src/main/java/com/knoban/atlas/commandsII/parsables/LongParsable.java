@@ -79,7 +79,7 @@ public class LongParsable implements ACParsable<Long> {
 
     @NotNull
     @Override
-    public Optional getOvercastName() {
+    public Optional<String> getOvercastName() {
         return Optional.of("Whole #");
     }
 }

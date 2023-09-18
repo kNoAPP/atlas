@@ -1,7 +1,5 @@
 package com.knoban.atlas.commandsII;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.knoban.atlas.Atlas;
 import com.knoban.atlas.commandsII.annotations.AtlasParam;
 import com.knoban.atlas.structure.PQEntry;
@@ -79,14 +77,13 @@ public class ACTree {
             }
 
             current.fulfillment = m;
-            current.fulfillmentTiming = Timings.of(plugin, "AtlasCommand - execute - " + m.getDeclaringClass().getName() + "#" + m.getName());
             current.instance = instance;
             current.permission = permission;
         }
     }
 
     public boolean containsCommand(@NotNull Method m, @NotNull String path) {
-        Queue<Object> objQueue = new LinkedList();
+        Queue<Object> objQueue = new LinkedList<Object>();
         int paramIndex = 1; // Param index 0 is reserved for the sender of the command
         for(String arg : path.split(" ")) {
             if(arg.equals("<?>")) {
@@ -123,7 +120,7 @@ public class ACTree {
 
     public void removeCommand(Method m, boolean optimizeTree, String... paths) {
         for(String path : paths) {
-            Queue<Object> objQueue = new LinkedList();
+            Queue<Object> objQueue = new LinkedList<Object>();
             int paramIndex = 1; // Param index 0 is reserved for the sender of the command
             for(String arg : path.split(" ")) {
                 if(arg.equals("<?>")) {
@@ -162,7 +159,6 @@ public class ACTree {
             }
 
             current.fulfillment = null;
-            current.fulfillmentTiming = null;
             current.instance = null;
             current.permission = null;
             for(Pair<ArrayList<String>, String[]> suggestionToRemove : suggestionsToRemove) {
@@ -264,7 +260,6 @@ public class ACTree {
                         class AtlasCommandExecute extends BukkitRunnable { //using local class to name the scheduled task in timings
                             @Override
                             public void run() {
-                                current.fulfillmentTiming.startTiming();
                                 try {
                                     current.fulfillment.invoke(current.instance, parsed.toArray(new Object[0]));
                                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -273,8 +268,6 @@ public class ACTree {
                                     PQEntry<ACNode<?>[]> pqEntry = new PQEntry<>(path.toArray(new ACNode<?>[0]), Integer.MAX_VALUE);
                                     pqEntry.setExtra("kNoAPP's code shit the bed. See Console for details.");
                                     errors.offer(pqEntry);
-                                } finally {
-                                    current.fulfillmentTiming.stopTiming();
                                 }
                             }
                         }
@@ -393,7 +386,6 @@ public class ACTree {
         private final ArrayList<String> optionalSuggestions;
 
         private Method fulfillment;
-        private Timing fulfillmentTiming;
         private Object instance;
         private String permission;
 

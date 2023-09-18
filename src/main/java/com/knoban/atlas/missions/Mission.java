@@ -140,7 +140,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
         List<String> lore = new ArrayList<>(Arrays.asList(getDescription()));
         im.setLore(lore);
         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS,
-                ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE);
+                ItemFlag.HIDE_ITEM_SPECIFICS, ItemFlag.HIDE_UNBREAKABLE);
         missionItem.setItemMeta(im);
     }
 

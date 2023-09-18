@@ -71,7 +71,7 @@ public class DataHandler {
 	/**
 	 * Export a resource embedded into a Jar file to the local file path
 	 */
-	private void exportResource(Class resource) throws Exception {
+	private void exportResource(Class<? extends Plugin> resource) throws Exception {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
 
