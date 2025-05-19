@@ -44,7 +44,7 @@ public class GenericEstateListener implements Listener {
         this.plugin = plugin;
         this.lm = lm;
 
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     /**
